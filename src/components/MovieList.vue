@@ -5,13 +5,12 @@
     <div class="nav">
         <button @click="sortLowest()">Lowest rated</button>
         <button @click="sortHighest()">Highest rated</button>
+        <button @click="sortName('asc')"> A-Z </button>
+        <button @click="sortName('desc')"> Z-A </button>
     </div>
     <ul>
-        <li>
-           <strong> Movie name | <span>Movie rating</span> </strong>
-        </li>
-        <li v-for="(movie, index) in movies" :key="index">
-          <Movie :movie="movie"/>
+        <li v-for="movie in movies" :key="movie.id" >
+          <Movie :movie="movie" />
         </li>
     </ul>
 </div>
@@ -25,7 +24,7 @@ export default {
   components: { Movie },
   data () {
     return {
-      msg: 'Welcome to Vue Movie List. Enjoy the App!',
+      msg: 'Movieasy - Everything you need, not more!',
       movies: self.movies,
       isActive: false
     }
@@ -36,6 +35,19 @@ export default {
     },
     sortHighest () {
       this.movies.sort((a, b) => b.vote_average - a.vote_average)
+    },
+    sortName (order) {
+      this.movies.sort(function (a, b) {
+        var titleA = a.title.toUpperCase()
+        var titleB = b.title.toUpperCase()
+        if ((titleA < titleB && order === 'asc') || (titleA > titleB && order === 'desc')) {
+          return -1
+        }
+        if ((titleA < titleB && order === 'desc') || (titleA > titleB && order === 'asc')) {
+          return 1
+        }
+        return 0
+      })
     }
   },
   mounted () {

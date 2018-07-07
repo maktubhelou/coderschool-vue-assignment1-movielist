@@ -6,7 +6,7 @@
 
 - [√] User should see a list of movies from database
 - [ ] User should be able to search the results (filter)
-- [ ] User should be able to click to see a description of movie
+- [√] User should be able to click to see a description of movie
 - [ ] User should be able to filter by genre
 - [√] User should be able to sort the list by a score using the buttons.
 - [ ] User should see movies with a score higher than 8.2 stand out with a different background.

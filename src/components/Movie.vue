@@ -1,12 +1,22 @@
 <template>
 <div>
-  <div>
-  {{ movie.title }} |<span> {{ movie.vote_average }} </span> |
-  <button @click="show = !show">show overview</button>
-
+  <div class="movie-header-outer">
+    <div class="movie-header-inner">
+      <img :src="imageLink" class="thumbnail"/>
+      <div class="title-and-score">
+        <span class="left">{{ movie.title }}</span>
+        <br>
+        <span :class="{ popular: movie.vote_average > 8.2 }"> Rating: {{ movie.vote_average }} </span>
+      </div>
+    </div>
+    <button @click="show = !show" class="smallbutton">show overview</button>
   </div>
-  <div v-show="show">
-    {{movie.overview}}
+        <div id="rating-bar" :style="styleObject"></div>
+  <div v-show="show" class="movie-box">
+    <img :src="backgroundLink" class="image"/>
+    <div class="overview">
+    {{ movie.overview }}
+    </div>
   </div>
 </div>
 </template>
@@ -17,26 +27,87 @@ export default {
   props: ['movie'],
   data () {
     return {
-      show: false
+      show: false,
+      imageLink: `http://image.tmdb.org/t/p/w185//${this.movie.poster_path}`,
+      backgroundLink: `http://image.tmdb.org/t/p/w500/${this.movie.backdrop_path}`,
+      styleObject: {
+        color: '#fff',
+        height: '2px',
+        width: `${this.movie.vote_average * 10}%`,
+        backgroundImage: `linear-gradient(90deg, rgba(25, 25, 100, ${this.movie.vote_average / 10}), white)`
+      }
     }
+  },
+  mounted () {
+
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
+.movie-header-outer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 5px;
+  box-shadow: 0 0 5px 5px rgba(255, 255, 255, 0.5);
+  background-color: rgba(204, 204, 204, 0.4);
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.movie-header-inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+
+.movie-box {
+  display: flex;
+  margin-top: 10px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
 }
-a {
-  color: #42b983;
+
+.thumbnail{
+  width: 50px;
+  height: 70px;
+  border: 1px solid white;
+  box-shadow: 0 0 5px black;
+}
+
+.image {
+  opacity: 0.8;
+  width: 95%;
+  position: relative;
+  filter: blur(10px);
+}
+
+.title-and-score {
+  text-align: left;
+  margin-left: 10px;
+  align-items: stretch;
+}
+
+.overview {
+  position: absolute;
+  height: 95%;
+  width: 95%;
+  padding: 10px;
+  align-items: center;
+  overflow: scroll;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.smallbutton {
+  font-size: 10px;
+}
+
+.popular {
+  background-color: rgba(255, 188, 63, 0.856);
 }
 </style>
