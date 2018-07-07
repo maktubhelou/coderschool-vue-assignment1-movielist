@@ -8,6 +8,10 @@
         <button @click="sortName('asc')"> A-Z </button>
         <button @click="sortName('desc')"> Z-A </button>
     </div>
+    <div class="nav">
+        <input type="text" placeholder="Search..." v-model="search" @keypress.enter="searchMovies" />
+        <button v-show="search" @click="searchMovies">Go!</button>
+      </div>
     <ul>
         <li v-for="movie in movies" :key="movie.id" >
           <Movie :movie="movie" />
@@ -24,7 +28,9 @@ export default {
   components: { Movie },
   data () {
     return {
-      msg: 'Movieasy - Everything you need, not more!',
+      msg: 'Welcome. Happy viewing!',
+      search: '',
+      original: self.original,
       movies: self.movies,
       isActive: false
     }
@@ -48,6 +54,10 @@ export default {
         }
         return 0
       })
+    },
+    searchMovies () {
+      const newList = this.original.filter(movie => movie.title.toLowerCase().includes(this.search.toLowerCase()))
+      this.movies = newList
     }
   },
   mounted () {
@@ -56,6 +66,7 @@ export default {
       return response.json()
     }).then(function (result) {
       self.movies = result.results.sort((a, b) => b.vote_average - a.vote_average)
+      self.original = self.movies;
     })
   }
 }

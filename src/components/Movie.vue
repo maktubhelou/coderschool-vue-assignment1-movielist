@@ -4,7 +4,7 @@
     <div class="movie-header-inner">
       <img :src="imageLink" class="thumbnail"/>
       <div class="title-and-score">
-        <span class="left">{{ movie.title }}</span>
+        <h3>{{ movie.title }}</h3>
         <br>
         <span :class="{ popular: movie.vote_average > 8.2 }"> Rating: {{ movie.vote_average }} </span>
       </div>
@@ -80,27 +80,29 @@ export default {
 
 .image {
   opacity: 0.8;
-  width: 95%;
+  width: 90%;
+  height: 90%;
+  margin-top: 5px;
   position: relative;
-  filter: blur(10px);
+  filter: blur(5px);
+  border: 5px solid white;
 }
 
 .title-and-score {
   text-align: left;
   margin-left: 10px;
-  align-items: stretch;
 }
 
 .overview {
   position: absolute;
   height: 95%;
-  width: 95%;
-  padding: 10px;
+  width: 90%;
+  padding: 15px;
   align-items: center;
   overflow: scroll;
-  border-radius: 2px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(50, 60, 75, 0.7);
   color: white;
+  text-align: justify;
 }
 
 .smallbutton {
