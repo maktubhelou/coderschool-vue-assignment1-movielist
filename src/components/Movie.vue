@@ -6,7 +6,7 @@
       <div class="title-and-score">
         <h3>{{ movie.title }}</h3>
         <br>
-        <span :class="{ popular: movie.vote_average > 8.2 }"> Rating: {{ movie.vote_average }} </span>
+        <span class="rating" :class="{ popular: movie.vote_average > 8.2 }"> Rating: {{ movie.vote_average }} </span>
       </div>
     </div>
     <div class="right">
@@ -124,7 +124,7 @@ export default {
 }
 
 .image {
-  opacity: 0.8;
+  opacity: 0.2;
   width: 90%;
   height: 90%;
   margin-top: 5px;
@@ -147,7 +147,7 @@ position: absolute;
     -ms-flex-align: center;
     align-items: center;
     overflow: scroll;
-    background: rgba(11, 42, 65, 0.8);
+    background: rgba(39, 12, 122, 0.4);
     color: white;
     text-align: justify;
 }
@@ -163,7 +163,14 @@ position: absolute;
   align-items: flex-end;
 }
 
+.rating {
+  border-radius: 10px;
+  padding: 0 10px;
+  background-color: rgba(243, 207, 142, 0.6);
+}
+
 .popular {
-  background-color: rgba(255, 188, 63, 0.856);
+  color: rgb(255, 255, 255);
+  background-color: rgba(231, 60, 12, 0.856);
 }
 </style>

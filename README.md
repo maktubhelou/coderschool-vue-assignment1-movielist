@@ -5,12 +5,17 @@
 ## User Stories
 
 - [√] User should see a list of movies from database
-- [ ] User should be able to search the results (filter)
-- [√] User should be able to click to see a description of movie
-- [ ] User should be able to filter by genre
+- [√] User should be able to search the results.
+- [√] User should be able to look up movies within the current results.
+- [√] User should be able to click to see a description (overview) of movie
+- [√] User should be able to filter by genre
 - [√] User should be able to sort the list by a score using the buttons.
-- [ ] User should see movies with a score higher than 8.2 stand out with a different background.
-- [ ] Background intensity of each item should change based on the movie score value.
+- [√] User should see movies with a score higher than 8.2 stand out with a different background.
+- [√] Background intensity of each item should change based on the movie score value.
+- [√] Ratings bar should show rating and change based on the movie score value.
+- [√] User can see release date of movie.
+- [√] User can see genre of movie in "pills".
+- [√] User can see original language of movie.
 
 ## Build Setup
 

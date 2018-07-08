@@ -1,7 +1,7 @@
 <template>
     <div id="app">
-    <h1>IMDB movies:</h1>
-    <p> {{ msg }} </p>
+        <h1>IMDB movies:</h1>
+        <p> {{ msg }} </p>
     <div class="nav">
         <button @click="sortLowest()">Lowest rated</button>
         <button @click="sortHighest()">Highest rated</button>
@@ -24,6 +24,10 @@
             <Movie :movie="movie" :genres="genres" />
           </li>
         </ul>
+      <div class="nav">
+        current page: {{ page }}
+        <button @click="fetchNextPage">next page</button>
+      </div>
       </div>
       <div class="col-2">
         <GenreList :genres="genres.genres" :update="fetchGenreCollection"/>
@@ -47,10 +51,13 @@ export default {
       search: '',
       searchMsg: 'Search returned zero results.',
       genres: [],
+      backgroundLink: `http://image.tmdb.org/t/p/w500/gBmrsugfWpiXRh13Vo3j0WW55qD.jpg`,
       original: self.original,
       movies: self.movies,
       isActive: false,
-      data: self.data
+      data: self.data,
+      lastQuery: '',
+      page: 1
     }
   },
   methods: {
@@ -73,11 +80,13 @@ export default {
         return 0
       })
     },
-    updateList (result) {
+    updateList (result, query, nextPage) {
       let self = this
       self.movies = result.results.sort((a, b) => b.vote_average - a.vote_average)
       self.original = self.movies
       self.data = result
+      self.lastQuery = query
+      self.page = nextPage || 1
     },
     findMovies () {
       const newList = this.original.filter(movie => movie.title.toLowerCase().includes(this.find.toLowerCase()))
@@ -92,11 +101,23 @@ export default {
     },
     searchMovies () {
       let self = this
+      let query = `https://api.themoviedb.org/3/search/movie?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US&query=${this.search.toLowerCase()}&page=1&include_adult=false
+`
       fetch(`https://api.themoviedb.org/3/search/movie?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US&query=${this.search.toLowerCase()}&page=1&include_adult=false
 `).then(function (response) {
         return response.json()
       }).then(function (result) {
-        self.updateList(result)
+        self.updateList(result, query)
+      })
+    },
+    fetchNextPage () {
+      let self = this
+      let nextPage = self.page + 1
+      let query = self.lastQuery + '&page=' + nextPage
+      fetch(query).then(function (response) {
+        return response.json()
+      }).then(function (result) {
+        self.updateList(result, query, nextPage)
       })
     },
     fetchGenre () {
@@ -108,10 +129,11 @@ export default {
     },
     fetchGenreCollection (genreId) {
       let self = this
+      let query = `https://api.themoviedb.org/3/genre/${genreId}/movies?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US&include_adult=false&sort_by=created_at.asc%27`
       fetch(`https://api.themoviedb.org/3/genre/${genreId}/movies?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US&include_adult=false&sort_by=created_at.asc%27`).then(function (response) {
         return response.json()
       }).then(function (result) {
-        self.updateList(result)
+        self.updateList(result, query)
       })
     }
   },
@@ -122,10 +144,11 @@ export default {
     }).then(function (result) {
       self.genres = result
     })
+    let query = 'https://api.themoviedb.org/3/discover/movie?api_key=d993bdf37f8ab7c574c990434a85a69f&sort_by=popularity.desc'
     fetch('https://api.themoviedb.org/3/discover/movie?api_key=d993bdf37f8ab7c574c990434a85a69f&sort_by=popularity.desc').then(function (response) {
       return response.json()
     }).then(function (result) {
-      self.updateList(result)
+      self.updateList(result, query)
     })
   }
 }
