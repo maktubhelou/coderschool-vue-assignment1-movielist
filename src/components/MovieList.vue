@@ -9,12 +9,13 @@
         <button @click="sortName('desc')"> Z-A </button>
     </div>
     <div class="nav">
-        <input type="text" placeholder="Find..." v-model="find" @keypress.enter="findMovies" />
-        <button v-show="find" @click="findMovies">Go!</button>
+        <input type="text" placeholder="Find in list..." v-model="find" @keyup="findMovies" />
+        <p v-if="findMsg">{{ findMsg }}</p>
       </div>
     <div class="nav">
-        <input type="text" placeholder="Search..." v-model="search" @keypress.enter="searchMovies" />
+        <input type="text" placeholder="Search database..." v-model="search" @keypress.enter="searchMovies" />
         <button v-show="search" @click="searchMovies">Go!</button>
+        <p v-if="movies && movies.length === 0">{{ searchMsg }}</p>
       </div>
     <div class="columns">
       <div class="col-1">
@@ -25,7 +26,7 @@
         </ul>
       </div>
       <div class="col-2">
-        <GenreList :genres="genres.genres"/>
+        <GenreList :genres="genres.genres" :update="fetchGenreCollection"/>
       </div>
     </div>
 </div>
@@ -42,8 +43,10 @@ export default {
     return {
       msg: 'Welcome. Happy viewing!',
       find: '',
+      findMsg: '',
       search: '',
-      genres: self.genres,
+      searchMsg: 'Search returned zero results.',
+      genres: [],
       original: self.original,
       movies: self.movies,
       isActive: false,
@@ -70,9 +73,22 @@ export default {
         return 0
       })
     },
+    updateList (result) {
+      let self = this
+      self.movies = result.results.sort((a, b) => b.vote_average - a.vote_average)
+      self.original = self.movies
+      self.data = result
+    },
     findMovies () {
       const newList = this.original.filter(movie => movie.title.toLowerCase().includes(this.find.toLowerCase()))
       this.movies = newList
+      if (this.find.length === 0) {
+        this.findMsg = ''
+      } else if (this.movies.length === 0) {
+        this.findMsg = 'There are no movies matching the current criteria'
+      } else {
+        this.findMsg = `There are ${newList.length} movies containing '${this.find}'.`
+      }
     },
     searchMovies () {
       let self = this
@@ -80,9 +96,7 @@ export default {
 `).then(function (response) {
         return response.json()
       }).then(function (result) {
-        self.movies = result.results.sort((a, b) => b.vote_average - a.vote_average)
-        self.original = self.movies
-        self.data = result
+        self.updateList(result)
       })
     },
     fetchGenre () {
@@ -91,21 +105,27 @@ export default {
       }).then(function (result) {
         self.genres = result
       })
+    },
+    fetchGenreCollection (genreId) {
+      let self = this
+      fetch(`https://api.themoviedb.org/3/genre/${genreId}/movies?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US&include_adult=false&sort_by=created_at.asc%27`).then(function (response) {
+        return response.json()
+      }).then(function (result) {
+        self.updateList(result)
+      })
     }
   },
   mounted () {
     let self = this
-    fetch('https://api.themoviedb.org/3/discover/movie?api_key=d993bdf37f8ab7c574c990434a85a69f&sort_by=popularity.desc').then(function (response) {
-      return response.json()
-    }).then(function (result) {
-      self.movies = result.results.sort((a, b) => b.vote_average - a.vote_average)
-      self.original = self.movies
-      self.data = result
-    })
     fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US').then(function (response) {
       return response.json()
     }).then(function (result) {
       self.genres = result
+    })
+    fetch('https://api.themoviedb.org/3/discover/movie?api_key=d993bdf37f8ab7c574c990434a85a69f&sort_by=popularity.desc').then(function (response) {
+      return response.json()
+    }).then(function (result) {
+      self.updateList(result)
     })
   }
 }

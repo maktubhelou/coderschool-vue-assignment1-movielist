@@ -10,11 +10,13 @@
       </div>
     </div>
     <div class="right">
-      <div>released: {{ movie.release_date }}</div>
-      <div>votes: {{ movie.vote_count }}</div>
-      <div>language: {{ movie.original_language.toUpperCase() }}</div>
-      <div>genres: {{ movie.genre_ids }}</div>
-    <button @click="show = !show" class="smallbutton">show overview</button>
+      <div class="badge badge-purple">released: {{ movie.release_date }}</div>
+      <div class="badge badge-purple">votes: {{ movie.vote_count }}</div>
+      <div class="badge badge-purple">language: {{ movie.original_language.toUpperCase() }}</div>
+      <div>
+        <p v-for="value in movieGenres" :key="value.id" class="badge badge-orange">{{ value.name }}</p>
+      </div>
+    <button @click="show = !show" class="smallbutton badge">show overview</button>
     </div>
   </div>
         <div id="rating-bar" :style="ratingBar"></div>
@@ -36,6 +38,7 @@ export default {
       show: false,
       imageLink: `http://image.tmdb.org/t/p/w185//${this.movie.poster_path}`,
       backgroundLink: `http://image.tmdb.org/t/p/w500/${this.movie.backdrop_path}`,
+      movieGenres: [],
       ratingBar: {
         color: '#fff',
         height: '2px',
@@ -47,7 +50,22 @@ export default {
       }
     }
   },
+  methods: {
+    getMovieGenres () {
+      let newGenres = []
+      let cardMovieGenres = [...this.movie.genre_ids]
+      let allGenres = [...this.genres.genres]
+      cardMovieGenres.forEach((genre) => {
+        let newGenre = allGenres.filter(function (obj) {
+          return obj.id === genre
+        })
+        newGenres.push(newGenre[0])
+      })
+      this.movieGenres = [...newGenres]
+    }
+  },
   mounted () {
+    this.getMovieGenres()
   }
 }
 </script>
@@ -76,6 +94,26 @@ export default {
   align-items: center;
   position: relative;
   width: 100%;
+}
+
+.badge {
+  display: inline-flex;
+  font-size: 9px;
+  padding: 0px 8px;
+  margin-top: 1px;
+  border: .5px solid transparent;
+  border-radius: 10px;
+  margin-left: 2px;
+}
+
+.badge-orange {
+  border: .5px solid rgba(255, 188, 63, 0.856);
+}
+
+.badge-purple {
+  border: 0.5px solid transparent;
+  color: rgb(255, 255, 255);
+  background: rgba(101, 29, 184, 0.356);
 }
 
 .thumbnail{
