@@ -121,7 +121,8 @@ export default {
       })
     },
     fetchGenre () {
-      fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US').then(function (response) {
+      let query = 'https://api.themoviedb.org/3/genre/movie/list?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US'
+      fetch(query).then(function (response) {
         return response.json()
       }).then(function (result) {
         self.genres = result
@@ -130,7 +131,7 @@ export default {
     fetchGenreCollection (genreId) {
       let self = this
       let query = `https://api.themoviedb.org/3/genre/${genreId}/movies?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US&include_adult=false&sort_by=created_at.asc%27`
-      fetch(`https://api.themoviedb.org/3/genre/${genreId}/movies?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US&include_adult=false&sort_by=created_at.asc%27`).then(function (response) {
+      fetch(query).then(function (response) {
         return response.json()
       }).then(function (result) {
         self.updateList(result, query)
@@ -139,13 +140,14 @@ export default {
   },
   mounted () {
     let self = this
-    fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US').then(function (response) {
+    let movieQuery = 'https://api.themoviedb.org/3/genre/movie/list?api_key=d993bdf37f8ab7c574c990434a85a69f&language=en-US'
+    fetch(movieQuery).then(function (response) {
       return response.json()
     }).then(function (result) {
       self.genres = result
     })
     let query = 'https://api.themoviedb.org/3/discover/movie?api_key=d993bdf37f8ab7c574c990434a85a69f&sort_by=popularity.desc'
-    fetch('https://api.themoviedb.org/3/discover/movie?api_key=d993bdf37f8ab7c574c990434a85a69f&sort_by=popularity.desc').then(function (response) {
+    fetch(query).then(function (response) {
       return response.json()
     }).then(function (result) {
       self.updateList(result, query)
